@@ -18,15 +18,21 @@ def run(features_file_name, tags_file_name, test_file_name, test_tags_file_name)
 
     tags_file = open(tags_file_name, 'r', encoding="utf8")
     labels = tags_file.read().splitlines()
+    labels = list(map(lambda line: list(line.split(",")), labels))
 
     test_file = open(test_file_name, 'r', encoding="utf8")
-    test= test_file.read().splitlines()
+    test = test_file.read().splitlines()
+    test = list(map(lambda line: list(line.split(",")), test))
 
     test_tags_file = open(test_tags_file_name, 'r', encoding="utf8")
     test_tags = test_tags_file.read().splitlines()
+    test_tags = list(map(lambda line: list(line.split(",")), test_tags))
 
     #train, test, train_tags, test_tags = model_selection.train_test_split(training_inputs, labels, test_size=0.3)
     num_of_features = len(training_inputs[0])
+
+    #training_inputs = [float(x) for x in training_inputs.split(',')]
+    #test = [float(x) for x in test.split(',')]
 
     train = np.array(list(map((lambda line: to_np_num(line)), training_inputs)))
     test = np.array(list(map((lambda line: to_np_num(line)), test)))
@@ -42,5 +48,7 @@ def run(features_file_name, tags_file_name, test_file_name, test_tags_file_name)
         p = perceptron.predict(vec)
         predictions_perceptron.append(p)
 
-    return accuracy_score(predictions_perceptron, test_tags) * 100
-    print("Perceptron Accuracy Score -> ",accuracy_score(predictions_perceptron, test_tags)*100)
+
+    #print("Perceptron Accuracy Score -> ", accuracy_score(predictions_perceptron, test_tags) * 100)
+    result = accuracy_score(predictions_perceptron, test_tags) * 100
+    print(result)
