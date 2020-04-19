@@ -19,14 +19,18 @@ filesToRemove = [os.path.join('features', f) for f in os.listdir('features')]
 for f in filesToRemove:
     os.remove(f)
 
-with open(train_features_file_name, 'w', newline='', encoding='utf-8') as csvoutForTrainFeatures, \
-         open(test_features_file_name, 'w', newline='', encoding='utf-8') as csvoutForTestFeatures:
-    csvoutForTrainFeatures = csv.writer(csvoutForTrainFeatures)
-    csvoutForTestFeatures = csv.writer(csvoutForTestFeatures)
-    for i in train_images:
-        csvoutForTrainFeatures.writerow(PicToVec(i).format())
-    for i in test_images:
-        csvoutForTestFeatures.writerow(PicToVec(i).format())
+with open(train_features_file_name, 'w', newline='', encoding='utf-8') as csvoutForTrainFeatures1, \
+         open(test_features_file_name, 'w', newline='', encoding='utf-8') as csvoutForTestFeatures1:
+    csvoutForTrainFeatures = csv.writer(csvoutForTrainFeatures1)
+    csvoutForTestFeatures = csv.writer(csvoutForTestFeatures1)
+    for i in range(len(train_images)):
+        var = PicToVec(train_images[i]).format()
+        csvoutForTrainFeatures.writerow(var)
+        csvoutForTrainFeatures1.flush()
+    for i in range(len(test_images)):
+        var = PicToVec(test_images[i]).format()
+        csvoutForTestFeatures.writerow(var)
+        csvoutForTestFeatures1.flush()
     for i in range(0, 10):
         train_tags_file = train_tags_file_name + i.__str__() + '.csv'
         test_tags_file = test_tags_file_name + i.__str__() + '.csv'
