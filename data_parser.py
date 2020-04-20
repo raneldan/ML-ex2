@@ -39,7 +39,7 @@ with open(train_features_file_name, 'w', newline='', encoding='utf-8') as csvout
             csvoutForTrainTags = csv.writer(csvoutForTrainTags)
             csvoutForTestTags = csv.writer(csvoutForTestTags)
             for label in train_labels:
-                if label == 8:
+                if i == 8:
                     if label != i:
                         csvoutForTrainTags.writerow("1")
                     else:
@@ -50,11 +50,11 @@ with open(train_features_file_name, 'w', newline='', encoding='utf-8') as csvout
                     else:
                         csvoutForTrainTags.writerow("0")
             for label in test_labels:
-                if label == 8:
+                if i == 8:
                     if label != i:
-                        csvoutForTrainTags.writerow("1")
+                        csvoutForTestTags.writerow("1")
                     else:
-                        csvoutForTrainTags.writerow("0")
+                        csvoutForTestTags.writerow("0")
                 else:
                     if label == i:
                         csvoutForTestTags.writerow("1")
