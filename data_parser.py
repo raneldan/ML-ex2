@@ -39,15 +39,28 @@ with open(train_features_file_name, 'w', newline='', encoding='utf-8') as csvout
             csvoutForTrainTags = csv.writer(csvoutForTrainTags)
             csvoutForTestTags = csv.writer(csvoutForTestTags)
             for label in train_labels:
-                if label == i:
-                    csvoutForTrainTags.writerow("1")
+                if label == 8:
+                    if label != i:
+                        csvoutForTrainTags.writerow("1")
+                    else:
+                        csvoutForTrainTags.writerow("0")
                 else:
-                    csvoutForTrainTags.writerow("0")
+                    if label == i:
+                        csvoutForTrainTags.writerow("1")
+                    else:
+                        csvoutForTrainTags.writerow("0")
             for label in test_labels:
-                if label == i:
-                    csvoutForTestTags.writerow("1")
+                if label == 8:
+                    if label != i:
+                        csvoutForTrainTags.writerow("1")
+                    else:
+                        csvoutForTrainTags.writerow("0")
                 else:
-                    csvoutForTestTags.writerow("0")
+                    if label == i:
+                        csvoutForTestTags.writerow("1")
+                    else:
+                        csvoutForTestTags.writerow("0")
+        print("Sucsses rate for digit ",  i)
         run_perceptron.run(train_features_file_name, train_tags_file, test_features_file_name, test_tags_file)
 
 
