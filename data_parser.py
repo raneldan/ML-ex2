@@ -4,6 +4,18 @@ from pic_to_vector import PicToVec
 import os
 import run_perceptron
 
+def assert_number_of_lines(number_of_lines, file_path):
+    with open(file_path, 'r') as file:
+        counter =0
+        content = file.read()
+        coList = content.split('\n')
+        for i in coList:
+            if i:
+                counter +=1
+        print(counter)
+        assert (counter == number_of_lines)
+
+
 train_features_file_name = 'features/train_images.csv'
 test_features_file_name = 'features/test_images.csv'
 train_tags_file_name = "tags/train_tags"
@@ -34,12 +46,14 @@ with open(train_features_file_name, 'w', newline='', encoding='utf-8') as csvout
     for i in range(0, 10):
         train_tags_file = train_tags_file_name + i.__str__() + '.csv'
         test_tags_file = test_tags_file_name + i.__str__() + '.csv'
-        with open(train_tags_file, 'w', newline='', encoding='utf-8') as csvoutForTrainTags, \
-                open(test_tags_file, 'w', newline='',encoding='utf-8') as csvoutForTestTags:
-            csvoutForTrainTags = csv.writer(csvoutForTrainTags)
-            csvoutForTestTags = csv.writer(csvoutForTestTags)
+        with open(train_tags_file, 'w', newline='', encoding='utf-8') as csvoutForTrainTags1, \
+                open(test_tags_file, 'w', newline='',encoding='utf-8') as csvoutForTestTags1:
+            csvoutForTrainTags = csv.writer(csvoutForTrainTags1)
+            csvoutForTestTags = csv.writer(csvoutForTestTags1)
+            counter = 0
             for label in train_labels:
-                if label == 8:
+                counter += 1
+                if i == 8:
                     if label != i:
                         csvoutForTrainTags.writerow("1")
                     else:
@@ -49,17 +63,23 @@ with open(train_features_file_name, 'w', newline='', encoding='utf-8') as csvout
                         csvoutForTrainTags.writerow("1")
                     else:
                         csvoutForTrainTags.writerow("0")
+                csvoutForTrainTags1.flush()
+            print(counter)
+            assert_number_of_lines(counter, train_tags_file)
+
             for label in test_labels:
-                if label == 8:
+                if i == 8:
                     if label != i:
-                        csvoutForTrainTags.writerow("1")
+                        csvoutForTestTags.writerow("1")
                     else:
-                        csvoutForTrainTags.writerow("0")
+                        csvoutForTestTags.writerow("0")
                 else:
                     if label == i:
                         csvoutForTestTags.writerow("1")
                     else:
                         csvoutForTestTags.writerow("0")
+                csvoutForTestTags1.flush()
+            assert_number_of_lines(len(test_labels), test_tags_file)
         print("Sucsses rate for digit ",  i)
         run_perceptron.run(train_features_file_name, train_tags_file, test_features_file_name, test_tags_file)
 
