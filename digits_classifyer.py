@@ -38,7 +38,7 @@ def classify_digits(binary_classification_results: List[List[bool]]) -> List[int
 
     print("Number of lines is: " + str(number_of_lines))
     print("number of two or more classifications (BAD):" + str(number_of_two_or_more))
-    print("number of two or more classifications (BAD):" + str(number_of_zero))
+    print("number zero classifications (BAD):" + str(number_of_zero))
     return classified_digits
 
 
