@@ -1,8 +1,12 @@
 import csv
 from mnist import MNIST
+
+from digits_classifyer import classify_digits, check_classification
 from pic_to_vector import PicToVec
 import os
 import run_perceptron
+
+from typing import List
 
 
 def assert_number_of_lines(number_of_lines, file_path):
@@ -31,6 +35,8 @@ test_images, test_labels = mndata.load_testing()
 filesToRemove = [os.path.join('features', f) for f in os.listdir('features')]
 for f in filesToRemove:
     os.remove(f)
+
+predictions_results: List[List[bool]] = []
 
 with open(train_features_file_name, 'w', newline='', encoding='utf-8') as csvoutForTrainFeatures1, \
         open(test_features_file_name, 'w', newline='', encoding='utf-8') as csvoutForTestFeatures1:
@@ -82,4 +88,7 @@ with open(train_features_file_name, 'w', newline='', encoding='utf-8') as csvout
                 csvoutForTestTags1.flush()
             assert_number_of_lines(len(test_labels), test_tags_file)
         print("Sucsses rate for digit ", i)
-        run_perceptron.run(train_features_file_name, train_tags_file, test_features_file_name, test_tags_file)
+        predictions_results.append(
+            run_perceptron.run(train_features_file_name, train_tags_file, test_features_file_name, test_tags_file))
+
+    check_classification(classify_digits(predictions_results), list(test_labels))
