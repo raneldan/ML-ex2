@@ -1,6 +1,7 @@
 from typing import List
 
 dimension = 28
+treshold = 5
 
 class PicToVec:
     def __init__(self, pic: List[int]):
@@ -16,6 +17,7 @@ class PicToVec:
         self.funcs.append(self.num_of_pixels)
         self.funcs.append(self.symmetry_x)
         self.funcs.append(self.symmetry_y)
+        self.funcs.append(self.symmetry_cross)
 
     def sum_of_values(self) -> int:
         sum = 0
@@ -26,15 +28,15 @@ class PicToVec:
     def num_of_pixels(self) -> int:
         counter = 0
         for cell in self.pic:
-            if (cell != 0):
+            if cell != 0:
                 counter += 1
         return counter
 
     def symmetry_x(self):
         score = 0
         for index, cell in enumerate(self.pic):
-            if (index % dimension < dimension / 2):
-                if (cell != 0 and cell == self.pic[index+ int(dimension/2)]):
+            if (index % dimension) < dimension / 2:
+                if cell != 0 and abs(cell - self.pic[index + int(dimension/2)]) < treshold:
                     score += 1
         return score
 
@@ -42,7 +44,15 @@ class PicToVec:
         score = 0
         for index, cell in enumerate(self.pic):
             if index < dimension * dimension / 2:
-                if cell != 0 and cell == self.pic[self.calc_y_position(index)]:
+                if cell != 0 and abs(cell - self.pic[self.calc_y_position(index)]) < treshold:
+                    score += 1
+        return score
+
+    def symmetry_cross(self):
+        score = 0
+        for index, cell in enumerate(self.pic):
+            if index < dimension * dimension / 2:
+                if cell != 0 and abs(cell - self.pic[dimension * dimension - index]) < treshold:
                     score += 1
         return score
 
