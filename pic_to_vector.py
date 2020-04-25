@@ -1,22 +1,25 @@
 from typing import List
 import numpy as np
 
-
 dimension = 28
 treshold = 10
 
+
 class PicToVec:
-    def __init__(self, pic: List[int]):
+    def __init__(self, pic: List[int], choose_backup_features: List[int] = [0]):
         self.pic: List[int] = pic
         self.funcs: List = []
         self.vector = []
+        self.back_up_vector = []
         self.__init_funcs()
-        for func in self.funcs:
+        for index, func in enumerate(self.funcs):
             result = func()
             for value in result:
+                if index in choose_backup_features:
+                    self.back_up_vector.append(value)
                 self.vector.append(value)
 
-    def __init_funcs(self,):
+    def __init_funcs(self, ):
         self.funcs.append(self.num_of_pixels)
         self.funcs.append(self.symmetry_x)
         self.funcs.append(self.symmetry_y)
@@ -36,7 +39,7 @@ class PicToVec:
         score = 0
         for index, cell in enumerate(self.pic):
             if (index % dimension) < dimension / 2:
-                if cell != 0 and abs(cell - self.pic[index + int(dimension/2)]) < treshold:
+                if cell != 0 and abs(cell - self.pic[index + int(dimension / 2)]) < treshold:
                     score += 1
         return [score]
 
@@ -88,16 +91,18 @@ class PicToVec:
             if index == 0:
                 diff.append(value)
             else:
-                diff.append(value-diff[index-1])
+                diff.append(value - diff[index - 1])
         for diff_value in diff:
             distances.append(diff_value)
         distances.append(maximum)
         distances.append(minimum)
         return distances
 
-
     def calc_y_position(self, index):
-        return (index % dimension) + ((dimension - int(index/dimension) - 1) * dimension)
+        return (index % dimension) + ((dimension - int(index / dimension) - 1) * dimension)
 
-    def format(self):
+    def format(self) -> List[float]:
         return self.vector
+
+    def back_up_format(self) -> List[float]:
+        return self.back_up_vector

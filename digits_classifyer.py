@@ -14,7 +14,8 @@ def check_classification(classified_digits: List[int], test_labels: List[int]) -
 
 
 # returns line to digit
-def classify_digits(binary_classification_results: List[List[bool]]) -> List[int]:
+def classify_digits(binary_classification_results: List[List[bool]], backup_binary_classification_results: List[List[bool]]) -> List[int]:
+    use_backup =  backup_binary_classification_results != []
     classified_digits: List[int] = []
     number_of_two_or_more = 0
     number_of_zero = 0
@@ -26,6 +27,9 @@ def classify_digits(binary_classification_results: List[List[bool]]) -> List[int
             digit_binary_classification_for_line = binary_classification_results[digit][line_number]
             if digit_binary_classification_for_line:
                 if found_digit:
+                    if use_backup and digit != 8 and backup_binary_classification_results[digit][line_number]:
+                        classified_digits[-1] = digit
+                        print("SWAPPED with backup!!!")
                     number_of_two_or_more += 1
                     print("Two classifications for line: " + str(line_number) + "with digit" + str(digit))
                 else:
