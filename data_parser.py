@@ -50,13 +50,13 @@ def build_tags():
             counter = 0
             for label in train_labels:
                 counter += 1
-                tag_to_write = 1 if label == i else 0
+                tag_to_write = (1 if label == i else 0).__str__()
                 csvoutForTrainTags.writerow(tag_to_write)
                 csvoutForTrainTags1.flush()
             counter = 0
             for label in test_labels:
                 counter += 1
-                tag_to_write = 1 if label == i else 0
+                tag_to_write = (1 if label == i else 0).__str__()
                 csvoutForTestTags.writerow(tag_to_write)
                 csvoutForTestTags1.flush()
         print("Sucsses rate for digit ", i)
