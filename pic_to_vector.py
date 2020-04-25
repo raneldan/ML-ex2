@@ -3,7 +3,7 @@ import numpy as np
 
 
 dimension = 28
-treshold = 5
+treshold = 10
 
 class PicToVec:
     def __init__(self, pic: List[int]):
@@ -17,20 +17,13 @@ class PicToVec:
                 self.vector.append(value)
 
     def __init_funcs(self,):
-        #self.funcs.append(self.sum_of_values)
         self.funcs.append(self.num_of_pixels)
-        #self.funcs.append(self.symmetry_x)
-        #self.funcs.append(self.symmetry_y)
+        self.funcs.append(self.symmetry_x)
+        self.funcs.append(self.symmetry_y)
         self.funcs.append(self.symmetry_cross)
         self.funcs.append(self.min_width)
         self.funcs.append(self.max_width)
         self.funcs.append(self.distance_from_row_start)
-
-    def sum_of_values(self) -> int:
-        sum = 0
-        for cell in self.pic:
-            sum += cell
-        return [sum]
 
     def num_of_pixels(self) -> int:
         counter = 0
