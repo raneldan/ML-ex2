@@ -9,10 +9,11 @@ import struct as st
 import matplotlib.pyplot as plt
 from skimage import img_as_bool
 from skimage.color import rgb2gray
-from skimage.morphology import skeletonize, binary_closing
+from skimage.morphology import skeletonize, binary_closing, thin, skeletonize_3d
 import os
 import tensorflow as tf
 from skimage.filters import threshold_otsu
+from skimage.util import invert
 
 def get_binary(img):
     thresh = threshold_otsu(img)
@@ -69,10 +70,18 @@ def write_feature_to_file(filename: str, is_backup: bool, images):
             else:
                 im = rgb2gray(images[i])
                 bin = get_binary(im)
-                skel = skeletonize(bin)
+                bin = invert(bin)
+                skel = skeletonize_3d(bin)
                 out = binary_closing(skel)
+                out = invert(out)
                 out = out.astype(int)
                 vec = out.flatten()
+
+                # f, (ax0, ax1) = plt.subplots(1, 2)
+                # ax0.imshow(im, cmap='gray', interpolation='nearest')
+                # ax1.imshow(out, cmap='gray', interpolation='nearest')
+                # plt.show()
+
                 pic = PicToVec(vec)
                 var = pic.format()
 

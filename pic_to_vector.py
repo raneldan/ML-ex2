@@ -38,7 +38,8 @@ class PicToVec:
     def symmetry_x(self):
         score = 0
         for index, cell in enumerate(self.pic):
-            if (index % dimension) < dimension / 2:
+            mod = (index % dimension)
+            if mod < (dimension / 2) and index < 770:
                 if cell != 0 and abs(cell - self.pic[index + int(dimension / 2)]) < treshold:
                     score += 1
         return [score]
@@ -54,7 +55,7 @@ class PicToVec:
     def symmetry_cross(self):
         score = 0
         for index, cell in enumerate(self.pic):
-            if index < dimension * dimension / 2:
+            if (index < dimension * dimension / 2) and (dimension * dimension - index) < 784:
                 if cell != 0 and abs(cell - self.pic[dimension * dimension - index]) < treshold:
                     score += 1
         return [score]
