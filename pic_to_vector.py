@@ -21,9 +21,9 @@ class PicToVec:
 
     def __init_funcs(self, ):
         self.funcs.append(self.num_of_pixels)
-        self.funcs.append(self.symmetry_x)
-        self.funcs.append(self.symmetry_y)
-        self.funcs.append(self.symmetry_cross)
+        #self.funcs.append(self.symmetry_x)
+        #self.funcs.append(self.symmetry_y)
+        #self.funcs.append(self.symmetry_cross)
         self.funcs.append(self.min_width)
         self.funcs.append(self.max_width)
         self.funcs.append(self.distance_from_row_start)
