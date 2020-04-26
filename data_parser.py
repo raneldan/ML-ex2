@@ -2,9 +2,22 @@ import csv
 from mnist import MNIST
 from digits_classifyer import classify_digits, check_classification
 from pic_to_vector import PicToVec
-import os
 import run_perceptron
 from typing import List
+import numpy as np
+import struct as st
+import matplotlib.pyplot as plt
+from skimage import img_as_bool
+from skimage.color import rgb2gray
+from skimage.morphology import skeletonize, binary_closing
+import os
+import tensorflow as tf
+from skimage.filters import threshold_otsu
+
+def get_binary(img):
+    thresh = threshold_otsu(img)
+    binary = img > thresh
+    return binary
 
 train_features_file_name = 'features/train_images.csv'
 backup_train_features_file_name = 'features/backup_train_images.csv'
@@ -16,11 +29,33 @@ test_tags_file_name = "tags/test_tags"
 
 mndata = MNIST('data')
 
-train_images, train_labels = mndata.load_training()
+(train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.mnist.load_data(path = 'data')
 
-test_images, test_labels = mndata.load_testing()
+def uploadData(filename , text):
+    train_imagesfile = open(filename[text], 'rb')
+    train_imagesfile.seek(0)
+    magic = st.unpack('>4B', train_imagesfile.read(4))
+    nImg = st.unpack('>I', train_imagesfile.read(4))[0]  # num of images
+    nR = st.unpack('>I', train_imagesfile.read(4))[0]  # num of rows
+    nC = st.unpack('>I', train_imagesfile.read(4))[0]  # num of column
+    nBytesTotal = nImg * nR * nC * 1  # since each pixel data is 1 byte
+    images_array = 255 - np.asarray(st.unpack('>' + 'B' * nBytesTotal, train_imagesfile.read(nBytesTotal))).reshape((nImg, nR, nC))
+    return images_array
 
-USE_BACKUP = True
+filename = {'images' : 'data/train-images-idx3-ubyte' ,'test' : 'data/t10k-images-idx3-ubyte'}
+train_images = uploadData(filename , 'images')
+test_images = uploadData(filename , 'test')
+
+# im = rgb2gray(images_array[0])
+# bin = get_binary(im)
+# out = binary_closing(skeletonize(bin))
+
+# f, (ax0, ax1) = plt.subplots(1, 2)
+# ax0.imshow(im, cmap='gray', interpolation='nearest')
+# ax1.imshow(out, cmap='gray', interpolation='nearest')
+# plt.show()
+
+USE_BACKUP = False
 
 
 def write_feature_to_file(filename: str, is_backup: bool, images):
@@ -32,7 +67,13 @@ def write_feature_to_file(filename: str, is_backup: bool, images):
                 pic = PicToVec(images[i], [0, 1, 3, 4])
                 var = pic.back_up_format()
             else:
-                pic = PicToVec(images[i])
+                im = rgb2gray(images[i])
+                bin = get_binary(im)
+                skel = skeletonize(bin)
+                out = binary_closing(skel)
+                out = out.astype(int)
+                vec = out.flatten()
+                pic = PicToVec(vec)
                 var = pic.format()
 
             csvoutForFeatures.writerow(var)
@@ -100,5 +141,5 @@ def assert_number_of_lines(number_of_lines, file_path):
 
 
 if __name__ == '__main__':
-    #    build_features(USE_BACKUP)
+    build_features(USE_BACKUP)
     build_tags(USE_BACKUP)
